@@ -1,5 +1,4 @@
-📖 Descripción del Proyecto: NovaNet
-NovaNet es un agente conversacional de atención al cliente para un proveedor de internet (ISP). Funciona como asesor digital a través de un chat web, integrando soporte técnico, pagos y ventas en un mismo sistema.
+📖 NovaNet es un agente conversacional de atención al cliente para un proveedor de internet (ISP). Funciona como asesor digital a través de un chat web, integrando soporte técnico, pagos y ventas en un mismo sistema.
 
 🎯 Funcionalidades principales
 Soporte técnico  
