@@ -1,6 +1,7 @@
 📖 NovaNet es un agente conversacional de atención al cliente para un proveedor de internet (ISP). Funciona como asesor digital a través de un chat web, integrando soporte técnico, pagos y ventas en un mismo sistema.
 
 🎯 Funcionalidades principales
+
 Soporte técnico  
 Diagnostica fallas consultando el estado real del router del cliente:
 
@@ -46,6 +47,7 @@ Estadísticas, alertas e historial
 <img width="1230" height="819" alt="Readme" src="https://github.com/user-attachments/assets/4060703d-493b-4dba-bd8c-d35a7c3dfbda" />
 
 🧩 Metodologías y patrones
+
 Arquitectura en capas: API / base de datos / herramientas (red, pagos, memoria) / frontend.
 
 Patrón fallback: degradación elegante (sin LLM → respuestas predefinidas; sin PostgreSQL → datos mock).
