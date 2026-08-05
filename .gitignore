@@ -1,0 +1,74 @@
+# ============================================
+# novaNet - .gitignore
+# ============================================
+# Archivos y carpetas que NO deben subirse a GitHub.
+
+# -------------------------------------------
+# Variables de entorno y credenciales
+# -------------------------------------------
+config/.env
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# -------------------------------------------
+# Entornos virtuales Python
+# -------------------------------------------
+.novaNet/
+.novaNet-linux/
+venv/
+.venv/
+env/
+ENV/
+
+# -------------------------------------------
+# Python
+# -------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# -------------------------------------------
+# IDEs y editores
+# -------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# -------------------------------------------
+# Sistema operativo
+# -------------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.lnk
+
+# -------------------------------------------
+# Logs
+# -------------------------------------------
+*.log
+logs/
+
+# -------------------------------------------
+# Archivos generados por herramientas
+# -------------------------------------------
+skills-lock.json
+.agents/
+
+# -------------------------------------------
+# Archivos de base de datos local
+# -------------------------------------------
+*.sqlite3
+*.db

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Red ISP</title>
+<base href="/simulacion/">
+<link rel="stylesheet" href="diseño.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="modal-overlay active" id="loginModal">
+  <div class="modal">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    <h2>Simulador de Red ISP</h2>
+    <p>Inicia sesion como tecnico para acceder al panel de control de la red.</p>
+    <label>Nombre de usuario</label>
+    <input type="text" id="loginUser" placeholder="Ej: juan" autocomplete="off">
+    <label>Clave</label>
+    <input type="password" id="loginPass" placeholder="Clave de acceso" autocomplete="off">
+    <br>
+    <button class="btn btn-primary" onclick="doLogin()">Entrar al panel</button>
+    <p id="loginError" style="color:#ef4444;font-size:12px;margin-top:8px;display:none;">Clave incorrecta</p>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+    </svg>
+    ISP Network Simulator
+  </div>
+  <div class="header-right">
+    <span id="clock"></span>
+    <span class="role-badge" id="roleBadge"></span>
+    <span id="userLabel" style="font-size:13px;"></span>
+    <button class="btn-small" onclick="doLogout()" style="margin-left:4px;">Salir</button>
+  </div>
+</header>
+
+<!-- APP -->
+<div class="app-layout">
+  <main>
+    <!-- STATS -->
+    <div class="section-title"><span class="dot"></span>Panel de Estadisticas</div>
+    <div class="stats-bar">
+      <div class="stat-card stat-green">
+        <div class="label">Operativos</div>
+        <div class="value" id="statVerde">0</div>
+        <div class="sub" id="statVerdePct">0% de la red</div>
+      </div>
+      <div class="stat-card stat-orange">
+        <div class="label">Con falla</div>
+        <div class="value" id="statNaranja">0</div>
+        <div class="sub" id="statNaranjaPct">0% de la red</div>
+      </div>
+      <div class="stat-card stat-red">
+        <div class="label">Requieren tecnico</div>
+        <div class="value" id="statRojo">0</div>
+        <div class="sub" id="statRojoPct">0% de la red</div>
+      </div>
+      <div class="stat-card stat-blue">
+        <div class="label">Disponibilidad</div>
+        <div class="value" id="statDisp">100%</div>
+        <div class="sub">Tiempo activo promedio</div>
+      </div>
+    </div>
+
+    <!-- SIM BUTTON -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;" id="simControls">
+      <button class="btn-sim" onclick="simulateRandomFailure()">Simular falla ahora</button>
+      <button class="btn-sim" onclick="simulateMultipleFailures()" style="border-color:rgba(168,85,247,.4);color:#a855f7;background:rgba(168,85,247,.1);">Simular 3 fallas</button>
+      <button class="btn-sim" onclick="resetAllRouters()" style="border-color:rgba(34,197,94,.4);color:var(--green);background:var(--green-bg);">Restablecer todo</button>
+      <span style="font-size:11px;color:var(--text-dim);">Auto cada 30 min</span>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-section">
+      <div class="progress-bar-container">
+        <div class="section-title" style="margin-bottom:12px;font-size:13px;">Distribucion de estados</div>
+        <div class="progress-row">
+          <span class="progress-label" style="color:var(--green);">Verde</span>
+          <div class="progress-track"><div class="progress-fill" id="barVerde" style="background:var(--green);width:100%"></div></div>
+          <span class="progress-pct" id="pctVerde">100%</span>
+        </div>
+        <div class="progress-row">
+          <span class="progress-label" style="color:var(--orange);">Naranja</span>
+          <div class="progress-track"><div class="progress-fill" id="barNaranja" style="background:var(--orange);width:0%"></div></div>
+          <span class="progress-pct" id="pctNaranja">0%</span>
+        </div>
+        <div class="progress-row">
+          <span class="progress-label" style="color:var(--red);">Rojo</span>
+          <div class="progress-track"><div class="progress-fill" id="barRojo" style="background:var(--red);width:0%"></div></div>
+          <span class="progress-pct" id="pctRojo">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE CONTROLS -->
+    <div class="timeline-controls">
+      <select id="timelineFilter" onchange="renderTimeline()">
+        <option value="all">Todos los routers</option>
+      </select>
+    </div>
+
+    <!-- ROUTER GRID -->
+    <div id="clientNotice" style="display:none;"></div>
+    <div class="section-title"><span class="dot"></span>Routers de la red</div>
+    <div class="router-grid" id="routerGrid"></div>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-tabs">
+      <button class="sidebar-tab active" onclick="switchTab('alerts',this)">Alertas</button>
+      <button class="sidebar-tab" onclick="switchTab('history',this)">Historial</button>
+    </div>
+    <div class="sidebar-content">
+      <!-- ALERTS -->
+      <div class="sidebar-panel active" id="panel-alerts">
+        <div id="alertsList"></div>
+        <div class="timeline-empty" id="alertsEmpty">No hay alertas activas.</div>
+      </div>
+      <!-- HISTORY -->
+      <div class="sidebar-panel" id="panel-history">
+        <div id="historyList"></div>
+        <div class="timeline-empty" id="historyEmpty">Sin eventos registrados.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="funciones.js"></script>
+</body>
+</html>
