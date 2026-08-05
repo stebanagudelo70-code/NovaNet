@@ -58,8 +58,4 @@ Memoria de sesión con TTL: contexto conversacional con expiración y limpieza a
 
 Diseño conversacional: tono humano estilo WhatsApp/Messenger con reglas de voz explícitas.
 
-Configuración 12-factor: credenciales y variables fuera del código.
-
-Este bloque está listo para insertarse como README.md → sección inferior en tu repositorio GitHub.
-
 
